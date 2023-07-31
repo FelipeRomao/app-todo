@@ -5,11 +5,15 @@ import (
 )
 
 type ListTodo struct {
-	TodoGateway entities.TodoGateway
+	TodoRepository entities.TodoGateway
+}
+
+func GetAllTodo(todoGateway entities.TodoGateway) *ListTodo {
+	return &ListTodo{TodoRepository: todoGateway}
 }
 
 func (l *ListTodo) Execute() ([]*entities.Todo, error) {
-	todos, err := l.TodoGateway.FindAll()
+	todos, err := l.TodoRepository.FindAll()
 
 	if err != nil {
 		return nil, err

@@ -1,33 +1,20 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
+	"net/http"
 
-	"github.com/FelipeRomao/todo/internal/infra/database"
-	"github.com/FelipeRomao/todo/internal/usecases"
+	"github.com/FelipeRomao/todo/cmd/api_server/routes"
+	"github.com/go-chi/chi"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
-	db, err := sql.Open("sqlite3", "db.sqlite3")
-	if err != nil {
-		panic(err)
-	}
+	r := chi.NewRouter()
 
-	todoRepository := database.NewTodoRepository(db)
-	createTodo := usecases.NewCreateTodo(todoRepository)
+	routes.SetRoutes(r)
 
-	input := &usecases.TodoInput{
-		ID:        "1",
-		Title:     "My first todo",
-		Completed: false,
-	}
+	fmt.Println("Servidor rodando em http://localhost:8080")
+	http.ListenAndServe(":8080", r)
 
-	output, err := createTodo.Execute(input)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(output)
 }

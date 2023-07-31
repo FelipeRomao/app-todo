@@ -3,9 +3,9 @@ package entities
 import "errors"
 
 type Todo struct {
-	ID        string
-	Title     string
-	Completed bool
+	ID        string `json:"id"`
+	Title     string `json:"title"`
+	Completed bool   `json:"completed"`
 }
 
 func NewTodo(id string, title string, completed bool) (*Todo, error) {
