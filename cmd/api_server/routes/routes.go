@@ -16,11 +16,10 @@ func SetRoutes(r chi.Router) {
 		panic(err)
 	}
 
-	listTodoRepository := database.GetAllTodoRepository(db)
-	listTodos := usecases.GetAllTodo(listTodoRepository)
+	todoRepository := database.NewTodoRepository(db)
 
-	createTodoRepository := database.NewTodoRepository(db)
-	createTodo := usecases.NewCreateTodo(createTodoRepository)
+	listTodos := usecases.GetAllTodo(todoRepository)
+	createTodo := usecases.NewCreateTodo(todoRepository)
 
 	r.Get("/api/todos", handlers.GetTodos(listTodos))
 	r.Post("/api/todo", handlers.CreateTodo(createTodo))

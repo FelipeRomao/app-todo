@@ -14,10 +14,6 @@ func NewTodoRepository(db *sql.DB) *TodoRepository {
 	return &TodoRepository{Db: db}
 }
 
-func GetAllTodoRepository(db *sql.DB) *TodoRepository {
-	return &TodoRepository{Db: db}
-}
-
 func (t *TodoRepository) Create(todo *entities.Todo) error {
 	_, err := t.Db.Exec("INSERT INTO todo (id, title, completed) VALUES (?, ?, ?)", todo.ID, todo.Title, todo.Completed)
 	if err != nil {

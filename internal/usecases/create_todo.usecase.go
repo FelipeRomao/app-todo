@@ -20,24 +20,23 @@ type TodoOutput struct {
 }
 
 type CreateTodo struct {
-	TodoRepository entities.TodoGateway
+	TodoGateway entities.TodoGateway
 }
 
 func NewCreateTodo(todoGateway entities.TodoGateway) *CreateTodo {
-	return &CreateTodo{TodoRepository: todoGateway}
+	return &CreateTodo{TodoGateway: todoGateway}
 }
 
 func (c *CreateTodo) Execute(input *TodoInput) (*TodoOutput, error) {
 	todo, err := entities.NewTodo(
 		input.ID,
 		input.Title,
-		input.Completed,
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	err = c.TodoRepository.Create(todo)
+	err = c.TodoGateway.Create(todo)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +44,6 @@ func (c *CreateTodo) Execute(input *TodoInput) (*TodoOutput, error) {
 	return &TodoOutput{
 		ID:        todo.ID,
 		Title:     todo.Title,
-		Completed: todo.Completed,
 		CreatedAt: time.Now(),
 	}, nil
 

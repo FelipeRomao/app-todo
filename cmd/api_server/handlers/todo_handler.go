@@ -47,18 +47,29 @@ func CreateTodo(createTodoUseCase *usecases.CreateTodo) http.HandlerFunc {
 		}
 
 		input := &usecases.TodoInput{
-			ID:        todo.ID,
-			Title:     todo.Title,
-			Completed: todo.Completed,
+			ID:    todo.ID,
+			Title: todo.Title,
 		}
 
-		_, err = createTodoUseCase.Execute(input)
+		output, err := createTodoUseCase.Execute(input)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Erro ao criar o todo: %v", err), http.StatusInternalServerError)
+			http.Error(w, fmt.Sprintf("Erro ao criar o todo: %v", err), http.StatusBadRequest)
+			return
+		}
+
+		response := map[string]string{
+			"id":        output.ID,
+			"title":     output.Title,
+			"createdAt": output.CreatedAt.String(),
+		}
+
+		responseJSON, err := json.Marshal(response)
+		if err != nil {
+			http.Error(w, "Erro ao criar a resposta JSON", http.StatusInternalServerError)
 			return
 		}
 
 		w.WriteHeader(http.StatusCreated)
-
+		w.Write(responseJSON)
 	}
 }

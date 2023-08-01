@@ -1,18 +1,20 @@
 package entities
 
-import "errors"
+import (
+	"github.com/go-playground/validator/v10"
+)
 
 type Todo struct {
-	ID        string `json:"id"`
-	Title     string `json:"title"`
+	ID        string `json:"id" validate:"required"`
+	Title     string `json:"title" validate:"required"`
 	Completed bool   `json:"completed"`
 }
 
-func NewTodo(id string, title string, completed bool) (*Todo, error) {
+func NewTodo(id string, title string) (*Todo, error) {
 	todo := &Todo{
 		ID:        id,
 		Title:     title,
-		Completed: completed,
+		Completed: false,
 	}
 
 	err := todo.Validate()
@@ -23,13 +25,8 @@ func NewTodo(id string, title string, completed bool) (*Todo, error) {
 }
 
 func (t *Todo) Validate() error {
-	if t.ID == "" {
-		return errors.New("ID cannot be empty")
-	}
+	validate := validator.New()
+	err := validate.Struct(t)
 
-	if t.Title == "" {
-		return errors.New("Title cannot be empty")
-	}
-
-	return nil
+	return err
 }
