@@ -18,9 +18,13 @@ func SetRoutes(r chi.Router) {
 
 	todoRepository := database.NewTodoRepository(db)
 
-	listTodos := usecases.GetAllTodo(todoRepository)
+	listTodo := usecases.NewGetAllTodo(todoRepository)
+	getOneTodo := usecases.NewGetOneTodo(todoRepository)
 	createTodo := usecases.NewCreateTodo(todoRepository)
+	removeTodo := usecases.NewRemoveTodo(todoRepository)
 
-	r.Get("/api/todos", handlers.GetTodos(listTodos))
-	r.Post("/api/todo", handlers.CreateTodo(createTodo))
+	r.Get("/api/todo", handlers.GetTodosHandler(listTodo))
+	r.Get("/api/todo/{id}", handlers.GetOneTodosHandler(getOneTodo))
+	r.Post("/api/todo", handlers.CreateTodoHandler(createTodo))
+	r.Delete("/api/todo/{id}", handlers.RemoveTodoHandler(removeTodo))
 }

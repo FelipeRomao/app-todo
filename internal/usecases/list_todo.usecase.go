@@ -8,7 +8,7 @@ type ListTodo struct {
 	TodoGateway entities.TodoGateway
 }
 
-func GetAllTodo(todoGateway entities.TodoGateway) *ListTodo {
+func NewGetAllTodo(todoGateway entities.TodoGateway) *ListTodo {
 	return &ListTodo{TodoGateway: todoGateway}
 }
 

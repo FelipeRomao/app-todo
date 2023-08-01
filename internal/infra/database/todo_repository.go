@@ -44,3 +44,22 @@ func (t *TodoRepository) FindAll() ([]*entities.Todo, error) {
 
 	return todos, nil
 }
+
+func (t *TodoRepository) Remove(id string) error {
+	_, err := t.Db.Exec("DELETE FROM todo WHERE id = ?", id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (t *TodoRepository) FindOne(id string) (*entities.Todo, error) {
+	row := t.Db.QueryRow("SELECT * FROM todo WHERE id = ?", id)
+
+	todo := &entities.Todo{}
+	if err := row.Scan(&todo.ID, &todo.Title, &todo.Completed); err != nil {
+		return nil, err
+	}
+
+	return todo, nil
+}

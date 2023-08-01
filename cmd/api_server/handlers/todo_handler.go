@@ -8,9 +8,10 @@ import (
 
 	"github.com/FelipeRomao/todo/internal/domain/entities"
 	"github.com/FelipeRomao/todo/internal/usecases"
+	"github.com/go-chi/chi"
 )
 
-func GetTodos(listTodosUseCase *usecases.ListTodo) http.HandlerFunc {
+func GetTodosHandler(listTodosUseCase *usecases.ListTodo) http.HandlerFunc {
 	todos, err := listTodosUseCase.Execute()
 	if err != nil {
 		panic(err)
@@ -28,7 +29,7 @@ func GetTodos(listTodosUseCase *usecases.ListTodo) http.HandlerFunc {
 	}
 }
 
-func CreateTodo(createTodoUseCase *usecases.CreateTodo) http.HandlerFunc {
+func CreateTodoHandler(createTodoUseCase *usecases.CreateTodo) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
@@ -70,6 +71,50 @@ func CreateTodo(createTodoUseCase *usecases.CreateTodo) http.HandlerFunc {
 		}
 
 		w.WriteHeader(http.StatusCreated)
+		w.Write(responseJSON)
+	}
+}
+
+func RemoveTodoHandler(removeTodoUseCase *usecases.RemoveTodo) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		id := chi.URLParam(r, "id")
+
+		err := removeTodoUseCase.Execute(id)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Erro ao remover o todo: %v", err), http.StatusBadRequest)
+			return
+		}
+
+		w.WriteHeader(http.StatusNoContent)
+	}
+}
+
+func GetOneTodosHandler(getOneTodoUseCase *usecases.GetOneTodo) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		id := chi.URLParam(r, "id")
+
+		todo, err := getOneTodoUseCase.Execute(id)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Erro ao buscar o todo: %v", err), http.StatusBadRequest)
+			return
+		}
+
+		response := map[string]string{
+			"id":    todo.ID,
+			"title": todo.Title,
+		}
+
+		responseJSON, err := json.Marshal(response)
+		if err != nil {
+			http.Error(w, "Erro ao criar a resposta JSON", http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
 		w.Write(responseJSON)
 	}
 }
