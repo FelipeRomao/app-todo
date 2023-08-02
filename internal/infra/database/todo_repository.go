@@ -63,3 +63,11 @@ func (t *TodoRepository) FindOne(id string) (*entities.Todo, error) {
 
 	return todo, nil
 }
+
+func (t *TodoRepository) Update(id string, todo *entities.Todo) error {
+	_, err := t.Db.Exec("UPDATE todo SET title = ?, completed = ? WHERE id = ?", todo.Title, todo.Completed, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

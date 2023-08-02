@@ -118,3 +118,38 @@ func GetOneTodosHandler(getOneTodoUseCase *usecases.GetOneTodo) http.HandlerFunc
 		w.Write(responseJSON)
 	}
 }
+
+func UpdateTodoHandler(updateTodoUseCase *usecases.UpdateTodo) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		id := chi.URLParam(r, "id")
+
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, "Erro ao ler o corpo da requisição", http.StatusInternalServerError)
+			return
+		}
+
+		var todo entities.Todo
+
+		err = json.Unmarshal(body, &todo)
+		if err != nil {
+			http.Error(w, "Erro na decodificação do JSON", http.StatusBadRequest)
+			return
+		}
+
+		input := &entities.Todo{
+			ID:        todo.ID,
+			Title:     todo.Title,
+			Completed: todo.Completed,
+		}
+
+		err = updateTodoUseCase.Execute(id, input)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Erro ao atualizar o todo: %v", err), http.StatusBadRequest)
+		}
+
+		w.WriteHeader(http.StatusNoContent)
+	}
+}
