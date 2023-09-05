@@ -2,6 +2,7 @@ package entities
 
 import (
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 )
 
 type Todo struct {
@@ -12,7 +13,7 @@ type Todo struct {
 
 func NewTodo(id string, title string) (*Todo, error) {
 	todo := &Todo{
-		ID:        id,
+		ID:        uuid.New().String(),
 		Title:     title,
 		Completed: false,
 	}

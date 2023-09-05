@@ -6,7 +6,6 @@ import (
 
 	"github.com/FelipeRomao/todo/cmd/api_server/routes"
 	"github.com/go-chi/chi"
-	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {

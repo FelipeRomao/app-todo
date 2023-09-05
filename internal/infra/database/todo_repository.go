@@ -15,7 +15,7 @@ func NewTodoRepository(db *sql.DB) *TodoRepository {
 }
 
 func (t *TodoRepository) Create(todo *entities.Todo) error {
-	_, err := t.Db.Exec("INSERT INTO todo (id, title, completed) VALUES (?, ?, ?)", todo.ID, todo.Title, todo.Completed)
+	_, err := t.Db.Exec("INSERT INTO todo (id, title, completed) VALUES ($1, $2, $3)", todo.ID, todo.Title, todo.Completed)
 	if err != nil {
 		return err
 	}
@@ -23,7 +23,7 @@ func (t *TodoRepository) Create(todo *entities.Todo) error {
 }
 
 func (t *TodoRepository) FindAll() ([]*entities.Todo, error) {
-	rows, err := t.Db.Query("SELECT * FROM todo")
+	rows, err := t.Db.Query("SELECT * FROM public.todo")
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func (t *TodoRepository) Remove(id string) error {
 }
 
 func (t *TodoRepository) FindOne(id string) (*entities.Todo, error) {
-	row := t.Db.QueryRow("SELECT * FROM todo WHERE id = ?", id)
+	row := t.Db.QueryRow("SELECT * FROM public.todo WHERE id = $1", id)
 
 	todo := &entities.Todo{}
 	if err := row.Scan(&todo.ID, &todo.Title, &todo.Completed); err != nil {
