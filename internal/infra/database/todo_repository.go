@@ -46,7 +46,7 @@ func (t *TodoRepository) FindAll() ([]*entities.Todo, error) {
 }
 
 func (t *TodoRepository) Remove(id string) error {
-	_, err := t.Db.Exec("DELETE FROM todo WHERE id = ?", id)
+	_, err := t.Db.Exec("DELETE FROM todo WHERE id = $1", id)
 	if err != nil {
 		return err
 	}
@@ -65,7 +65,7 @@ func (t *TodoRepository) FindOne(id string) (*entities.Todo, error) {
 }
 
 func (t *TodoRepository) Update(id string, todo *entities.Todo) error {
-	_, err := t.Db.Exec("UPDATE todo SET title = ?, completed = ? WHERE id = ?", todo.Title, todo.Completed, id)
+	_, err := t.Db.Exec("UPDATE todo SET title = $1, completed = $2 WHERE id = $3", todo.Title, todo.Completed, id)
 	if err != nil {
 		return err
 	}
