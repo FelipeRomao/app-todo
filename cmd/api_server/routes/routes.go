@@ -7,11 +7,13 @@ import (
 	"github.com/FelipeRomao/todo/internal/infra/database"
 	"github.com/FelipeRomao/todo/internal/usecases"
 	"github.com/go-chi/chi"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 )
 
 func SetRoutes(r chi.Router) {
-	db, err := sql.Open("sqlite3", "db.sqlite3")
+	connStr := "user=root password=postgres dbname=todo_app sslmode=disable"
+
+	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		panic(err)
 	}

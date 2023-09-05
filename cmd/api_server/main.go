@@ -11,10 +11,9 @@ import (
 
 func main() {
 	r := chi.NewRouter()
-
 	routes.SetRoutes(r)
 
-	fmt.Println("Servidor rodando em http://localhost:8080")
+	fmt.Println("running server on port 8080")
 	http.ListenAndServe(":8080", r)
 
 }
